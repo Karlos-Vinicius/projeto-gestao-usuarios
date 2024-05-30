@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from database.cliente import CLIENTES
 
 
@@ -34,7 +34,17 @@ def lista_clientes():
 @cliente_route.route("/", methods=["POST"])
 def inserir_cliente():
     """ Inserir os dados do cliente no banco de dados """
-    ...
+    
+    data = request.json
+    novo_usuario = {
+        "id": len(CLIENTES) + 1,
+        "nome": data["nome"],
+        "email": data["email"],
+    }
+
+    CLIENTES.append(novo_usuario)
+
+    return render_template("item_cliente.html", cliente=novo_usuario)
 
 
 @cliente_route.route("/new")
@@ -58,10 +68,15 @@ def form_edit_cliente(cliente_id):
 @cliente_route.route("/<int:cliente_id>/update", methods=["PUT"])
 def atualizar_cliente(cliente_id):
     """ Atualizar informações do cliente """
-    ...
+    return "Heloo world!"
 
 
 @cliente_route.route("/<int:cliente_id>/delete", methods=['DELETE'])
 def deletar_cliente(cliente_id):
     """ Deletar cliente do banco de dados """
-    ...
+    global CLIENTES
+    CLIENTES = [
+        c for c in CLIENTES if c["id"] != cliente_id
+    ]
+
+    return {"deleted": "ok"}
