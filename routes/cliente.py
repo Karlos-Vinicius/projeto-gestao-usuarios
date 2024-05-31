@@ -72,9 +72,6 @@ def form_edit_cliente(cliente_id):
 @cliente_route.route("/<int:cliente_id>/update", methods=["PUT"])
 def atualizar_cliente(cliente_id):
     """ Atualizar informações do cliente """
-
-    # Tentando melhorar esta parte... 
-    # Resolver bug depois kkkk
     
     cliente_atualizado = request.json
     cliente_atualizado["id"] = cliente_id
