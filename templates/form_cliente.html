@@ -2,6 +2,7 @@
     ele vai interceptar os dados e colocar na página    
 -->
 <form class="c-form" 
+      c-reload-container="true"
       {% if cliente %}
 
         action=" {{ url_for('cliente.atualizar_cliente', cliente_id=cliente.id) }}" 
@@ -19,14 +20,14 @@
 
     <div class="mb-3">
       <label class="form-label">Nome</label>
-      <input type="text" name="nome" class="form-control" {% if cliente %} value="{{cliente['nome']}}" {% endif %}>
+      <input type="text" name="nome" class="form-control" {% if cliente %} value="{{cliente.nome}}" {% endif %}>
     </div>
     
 
 
     <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="text" name="email" class="form-control" {% if cliente %} value="{{cliente['email']}} {% endif %}">
+        <input type="text" name="email" class="form-control" {% if cliente %} value="{{cliente.email}} {% endif %}">
       </div>
 
 

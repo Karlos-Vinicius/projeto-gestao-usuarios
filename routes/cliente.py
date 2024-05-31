@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from database.cliente import CLIENTES
+from database.models.cliente import Cliente
 
 
 cliente_route = Blueprint("cliente", __name__)
@@ -28,7 +29,8 @@ cliente_route = Blueprint("cliente", __name__)
 @cliente_route.route("/")
 def lista_clientes():
     """ Listar os clientes """
-    return render_template("lista_clientes.html", clientes=CLIENTES)
+    clientes = Cliente.select()
+    return render_template("lista_clientes.html", clientes=clientes)
 
 
 @cliente_route.route("/", methods=["POST"])
@@ -36,13 +38,10 @@ def inserir_cliente():
     """ Inserir os dados do cliente no banco de dados """
     
     data = request.json
-    novo_usuario = {
-        "id": len(CLIENTES) + 1,
-        "nome": data["nome"],
-        "email": data["email"],
-    }
-
-    CLIENTES.append(novo_usuario)
+    novo_usuario = Cliente.create(
+        nome = data["nome"],
+        email = data["email"],
+    )
 
     return render_template("item_cliente.html", cliente=novo_usuario)
 
@@ -56,7 +55,8 @@ def form_cliente():
 @cliente_route.route("/<int:cliente_id>")
 def detalhes_cliente(cliente_id):
     
-    cliente = list(filter(lambda c: c['id'] == cliente_id, CLIENTES))[0]
+    cliente = Cliente.get(Cliente.id == cliente_id)
+    print(cliente)
 
     return render_template("detalhe_cliente.html", cliente=cliente)
 
@@ -64,12 +64,7 @@ def detalhes_cliente(cliente_id):
 @cliente_route.route("/<int:cliente_id>/edit")
 def form_edit_cliente(cliente_id):
     """ Formulário para editar o cliente """
-    cliente = None 
-
-    for c in CLIENTES:
-        if c["id"] == cliente_id:
-            cliente = c 
-            break 
+    cliente = Cliente.get(Cliente.id == cliente_id) 
 
     return render_template("form_cliente.html", cliente=cliente)
 
@@ -84,11 +79,10 @@ def atualizar_cliente(cliente_id):
     cliente_atualizado = request.json
     cliente_atualizado["id"] = cliente_id
 
-    global CLIENTES
-    for indice in range(len(CLIENTES)):
-        if CLIENTES[indice]["id"] == cliente_id:
-            CLIENTES[indice] = cliente_atualizado
-            break
+    cliente = Cliente.get(Cliente.id == cliente_id)
+    cliente.nome = cliente_atualizado["nome"]
+    cliente.email = cliente_atualizado["email"]
+    cliente.save()
 
     return render_template('item_cliente.html', cliente=cliente_atualizado)
 
@@ -96,9 +90,7 @@ def atualizar_cliente(cliente_id):
 @cliente_route.route("/<int:cliente_id>/delete", methods=['DELETE'])
 def deletar_cliente(cliente_id):
     """ Deletar cliente do banco de dados """
-    global CLIENTES
-    CLIENTES = [
-        c for c in CLIENTES if c["id"] != cliente_id
-    ]
+    cliente = Cliente.get(Cliente.id == cliente_id)
+    cliente.delete_instance()
 
     return {"deleted": "ok"}
