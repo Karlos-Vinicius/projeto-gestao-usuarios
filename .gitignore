@@ -1,3 +1,6 @@
+# Banco de dados, para não subir no github
+customermanager.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

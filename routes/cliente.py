@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request
-from database.cliente import CLIENTES
 from database.models.cliente import Cliente
 
 
@@ -55,8 +54,7 @@ def form_cliente():
 @cliente_route.route("/<int:cliente_id>")
 def detalhes_cliente(cliente_id):
     
-    cliente = Cliente.get(Cliente.id == cliente_id)
-    print(cliente)
+    cliente = Cliente.get_by_id(cliente_id)
 
     return render_template("detalhe_cliente.html", cliente=cliente)
 
@@ -64,7 +62,7 @@ def detalhes_cliente(cliente_id):
 @cliente_route.route("/<int:cliente_id>/edit")
 def form_edit_cliente(cliente_id):
     """ Formulário para editar o cliente """
-    cliente = Cliente.get(Cliente.id == cliente_id) 
+    cliente = Cliente.get_by_id(cliente_id) 
 
     return render_template("form_cliente.html", cliente=cliente)
 
@@ -76,7 +74,7 @@ def atualizar_cliente(cliente_id):
     cliente_atualizado = request.json
     cliente_atualizado["id"] = cliente_id
 
-    cliente = Cliente.get(Cliente.id == cliente_id)
+    cliente = Cliente.get_by_id(cliente_id)
     cliente.nome = cliente_atualizado["nome"]
     cliente.email = cliente_atualizado["email"]
     cliente.save()
