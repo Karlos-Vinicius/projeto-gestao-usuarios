@@ -1,5 +1,5 @@
 <form class="c-form" 
-      action=" {{ url_for('cliente.inserir_cliente') }}" 
+      action=" {{ url_for('cliente.atualizar_cliente', cliente_id=cliente_id) }}" 
       method="PUT">
 
 
@@ -7,7 +7,7 @@
       <label class="form-label">Nome</label>
       <input type="text" name="nome" class="form-control">
     </div>
-    
+
 
 
     <div class="mb-3">

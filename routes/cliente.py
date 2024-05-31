@@ -55,20 +55,42 @@ def form_cliente():
 
 @cliente_route.route("/<int:cliente_id>")
 def detalhes_cliente(cliente_id):
-    print(cliente_id)
-    return render_template("detalhe_cliente.html")
+    
+    cliente = list(filter(lambda c: c['id'] == cliente_id, CLIENTES))[0]
+
+    return render_template("detalhe_cliente.html", cliente=cliente)
 
 
 @cliente_route.route("/<int:cliente_id>/edit")
 def form_edit_cliente(cliente_id):
     """ Formulário para editar o cliente """
-    return render_template("form_edit_cliente.html")
+    cliente = None 
+
+    for c in CLIENTES:
+        if c["id"] == cliente_id:
+            cliente = c 
+            break 
+
+    return render_template("form_cliente.html", cliente=cliente)
 
 
 @cliente_route.route("/<int:cliente_id>/update", methods=["PUT"])
 def atualizar_cliente(cliente_id):
     """ Atualizar informações do cliente """
-    return "Heloo world!"
+
+    # Tentando melhorar esta parte... 
+    # Resolver bug depois kkkk
+    
+    cliente_atualizado = request.json
+    cliente_atualizado["id"] = cliente_id
+
+    global CLIENTES
+    for indice in range(len(CLIENTES)):
+        if CLIENTES[indice]["id"] == cliente_id:
+            CLIENTES[indice] = cliente_atualizado
+            break
+
+    return render_template('item_cliente.html', cliente=cliente_atualizado)
 
 
 @cliente_route.route("/<int:cliente_id>/delete", methods=['DELETE'])

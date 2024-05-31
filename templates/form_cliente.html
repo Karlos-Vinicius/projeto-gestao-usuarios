@@ -2,25 +2,34 @@
     ele vai interceptar os dados e colocar na página    
 -->
 <form class="c-form" 
-      action=" {{ url_for('cliente.inserir_cliente') }}" 
-      method="POST"
-      c-append="#lista-clientes"
-      c-reload=true>
+      {% if cliente %}
+
+        action=" {{ url_for('cliente.atualizar_cliente', cliente_id=cliente.id) }}" 
+        method="PUT"
+        c-swap="#cliente-{{ cliente.id }}"
+      
+      {% else %}
+      
+        action=" {{ url_for('cliente.inserir_cliente') }}" 
+        method="POST"
+        c-append="#lista-clientes"
+
+      {% endif %}>
 
 
     <div class="mb-3">
       <label class="form-label">Nome</label>
-      <input type="text" name="nome" class="form-control">
+      <input type="text" name="nome" class="form-control" {% if cliente %} value="{{cliente['nome']}}" {% endif %}>
     </div>
     
 
 
     <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="text" name="email" class="form-control">
+        <input type="text" name="email" class="form-control" {% if cliente %} value="{{cliente['email']}} {% endif %}">
       </div>
 
 
 
-    <input class="btn btn-primary" type="submit" value="Enviar">
+    <input class="btn btn-primary" type="submit" value="{% if cliente %}Salvar{% else %}Criar{% endif %}">
 </form>
